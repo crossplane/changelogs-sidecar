@@ -16,7 +16,7 @@ env:
   # Common versions
   GO_VERSION: '1.23.6'
   GOLANGCI_VERSION: 'v1.62.0'
-  DOCKER_BUILDX_VERSION: 'v0.11.2'
+  DOCKER_BUILDX_VERSION: 'v0.23.0'
 
   IMAGE_NAME: ghcr.io/${{ github.repository }}
   IMAGE_VERSION: ${{ inputs.version }}
@@ -104,6 +104,6 @@ jobs:
           target: image
           build-args:
             GO_VERSION=${{ env.GO_VERSION }}
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ${{ env.IMAGE_NAME }}:${{ env.IMAGE_VERSION }}
