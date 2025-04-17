@@ -60,10 +60,6 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: true
-      matrix:
-        arch:
-          - amd64
-          - arm64
     steps:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -98,7 +94,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/${{ matrix.arch }}
+          platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
           target: image
