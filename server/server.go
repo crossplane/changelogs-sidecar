@@ -1,3 +1,4 @@
+// Package server implements a gRPC server for handling change logs.
 package server
 
 import (
@@ -12,17 +13,19 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/errors"
 )
 
+// Server implements a gRPC server for handling change logs.
 type Server struct {
 	changelogs.UnimplementedChangeLogServiceServer
 }
 
-func (s *Server) SendChangeLog(ctx context.Context, req *changelogs.SendChangeLogRequest) (*changelogs.SendChangeLogResponse, error) {
-	if req == nil || req.Entry == nil {
+// SendChangeLog handles incoming change log entries and writes them to stdout.
+func (s *Server) SendChangeLog(_ context.Context, req *changelogs.SendChangeLogRequest) (*changelogs.SendChangeLogResponse, error) {
+	if req == nil || req.GetEntry() == nil {
 		st := status.New(codes.Internal, "Request and change logs entry must not be nil")
 		return &changelogs.SendChangeLogResponse{}, st.Err()
 	}
 
-	if req.Entry.Timestamp != nil {
+	if req.GetEntry().GetTimestamp() != nil {
 		// We only care about resolution of the timestamps to seconds, so discard
 		// the nanoseconds.
 		req.Entry.Timestamp.Nanos = 0
@@ -30,7 +33,7 @@ func (s *Server) SendChangeLog(ctx context.Context, req *changelogs.SendChangeLo
 
 	// Marshal the change log entry coming over the wire to JSON using the
 	// protojson helper
-	b, err := protojson.Marshal(req.Entry)
+	b, err := protojson.Marshal(req.GetEntry())
 	if err != nil {
 		st := status.New(codes.Internal, errors.Wrap(err, "Failed to marshall input entry").Error())
 		return &changelogs.SendChangeLogResponse{}, st.Err()
