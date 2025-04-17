@@ -12,3 +12,4 @@ repository maintainers in their own `OWNERS.md` file.
 
 ## Maintainers
 * Jared Watts <jared@upbound.com> ([jbw976](https://github.com/jbw976))
+* Nic Cope <negz@upbound.io> ([negz](https://github.com/negz))
